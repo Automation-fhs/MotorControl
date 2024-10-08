@@ -104,13 +104,13 @@ float PRules[7][7] = {
 #define IN6 -IP6
 
 float IRules[7][7] = {
-    {IP6, IP6, IP6, IN5, IN5, IN2, IP2},
-    {IP6, IP6, IP4, IN5, IN4, IZO, IP4},
-    {IP6, IP6, IP2, IN5, IN2, IP2, IP6},
-    {IP6, IP4, IZO, IN5, IZO, IP4, IP6},
-    {IP6, IP2, IN2, IN5, IP2, IP6, IP6},
-    {IP4, IZO, IN4, IN5, IP4, IP6, IP6},
-    {IP2, IN2, IN5, IN5, IP6, IP6, IP6}};
+    {IP6, IP6, IP6, IN4, IN4, IN2, IP2},
+    {IP6, IP6, IP4, IN4, IN4, IZO, IP4},
+    {IP6, IP6, IP2, IN4, IN2, IP2, IP6},
+    {IP6, IP4, IZO, IN4, IZO, IP4, IP6},
+    {IP6, IP2, IN2, IN4, IP2, IP6, IP6},
+    {IP4, IZO, IN4, IN4, IP4, IP6, IP6},
+    {IP2, IN2, IN4, IN4, IP6, IP6, IP6}};
 
 // --------- D Rules ---------
 #define DZO 0
@@ -127,11 +127,20 @@ float IRules[7][7] = {
 #define DN5 -DP5
 #define DN6 -DP6
 
+// float DRules[7][7] = {
+//     {DN6, DN6, DN2, DP6, DP6, DP6, DN6},
+//     {DN6, DN6, DZO, DP6, DP6, DP4, DN6},
+//     {DN6, DN3, DP2, DP6, DP6, DP2, DN6},
+//     {DN6, DZO, DP4, DP6, DP4, DZO, DN6},
+//     {DN6, DP2, DP6, DP6, DP2, DN3, DN6},
+//     {DN6, DP4, DP6, DP6, DZO, DN6, DN6},
+//     {DN6, DP6, DP6, DP6, DN2, DN6, DN6}};
+
 float DRules[7][7] = {
-    {DN6, DN6, DN2, DP6, DP6, DP6, DN6},
-    {DN6, DN6, DZO, DP6, DP6, DP4, DN6},
-    {DN6, DN3, DP2, DP6, DP6, DP2, DN6},
-    {DN6, DZO, DP4, DP6, DP4, DZO, DN6},
-    {DN6, DP2, DP6, DP6, DP2, DN3, DN6},
-    {DN6, DP4, DP6, DP6, DZO, DN6, DN6},
-    {DN6, DP6, DP6, DP6, DN2, DN6, DN6}};
+    {DN6, DN6, DP2, DZO, DP6, DP6, DN6},
+    {DN6, DN6, DP4, DZO, DP6, DP4, DN6},
+    {DN6, DN3, DP6, DZO, DP6, DP2, DN6},
+    {DN6, DZO, DP6, DZO, DP6, DZO, DN6},
+    {DN6, DP2, DP6, DZO, DP6, DN3, DN6},
+    {DN6, DP4, DP6, DZO, DP4, DN6, DN6},
+    {DN6, DP6, DP6, DZO, DP2, DN6, DN6}};

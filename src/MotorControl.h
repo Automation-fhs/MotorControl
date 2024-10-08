@@ -22,4 +22,5 @@ private:
     float _time_interval;
     float _prev_setpoint = 0;
     bool _new_setpoint;
+    bool _ovsh = false;
 };

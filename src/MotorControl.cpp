@@ -42,80 +42,47 @@ int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1)
         this->_new_setpoint = true;
     }
 
+    // Convert setpoint Unit to Radian
+    if (unit == 1)
+        _setpoint = setpoint;
+    else
+        _setpoint = setpoint * 180 / M_PI;
+
+    // Calculate error, change of error and integral
+    float err = _setpoint - this->_getDeg(curPulse);
+    this->_integral += err * this->_time_interval;
+    float derr = (err - this->_prev_err) / this->_time_interval;
+
+    // Reset derr and integral due to setpoint changed
+    if (this->_new_setpoint)
+    {
+        derr = 0;
+        this->_integral = 0;
+        this->_ovsh = true;
+        this->_new_setpoint = false;
+    }
+    // Serial.println(this->_getDeg(curPulse));
+    this->_prev_err = err;
+
+    // Remove integral to prevent overshoot
+    if (this->_ovsh && abs(err) <= 5)
+    {
+        this->_integral = 0;
+        this->_ovsh = false;
+    }
+
     if (this->_Controller == 1)
     { // =================== PID Controller ===================
-
-        // Convert setpoint Unit to Radian
-        if (unit == 1)
-            _setpoint = setpoint;
-        else
-            _setpoint = setpoint * 180 / M_PI;
-
-        // Calculate error, change of error and integral
-        float err = _setpoint - this->_getDeg(curPulse);
-        this->_integral += err * this->_time_interval;
-        float derr = (err - this->_prev_err) / this->_time_interval;
-
-        // Reset derr and integral due to setpoint changed
-        if (this->_new_setpoint)
-        {
-            derr = 0;
-            this->_integral = 0;
-            this->_new_setpoint = false;
-        }
-        // Serial.println(this->_getDeg(curPulse));
-        this->_prev_err = err;
         result = (int)(myPID.Result(err, derr, this->_integral) * float(this->_pwm_res) / this->_rated_V);
     }
     else if (this->_Controller == 2)
     { // ------------------- Fuzzy Controller -------------------
-
-        // Convert setpoint Unit to Degree
-        if (unit == 1)
-            _setpoint = setpoint;
-        else
-            _setpoint = setpoint * 180 / M_PI;
-
-        // Calculate error and change of error
-        float err = _setpoint - this->_getDeg(curPulse);
-        float derr = (err - this->_prev_err) / this->_time_interval;
-
-        // Reset derr and integral due to setpoint changed
-        if (this->_new_setpoint)
-        {
-            derr = 0;
-            this->_integral = 0;
-            this->_new_setpoint = false;
-        }
-
-        this->_prev_err = err;
         result = -(int)(myFuzzy.Result(err, derr));
         // Serial.println(this->_getDeg(curPulse));
     }
     else if (this->_Controller == 3)
     { // ------------------- FuzzyPID Controller -------------------
-
-        // Convert setpoint Unit to Degree
-        if (unit == 1)
-            _setpoint = setpoint;
-        else
-            _setpoint = setpoint * 180 / M_PI;
-
-        // Calculate error, change of error and integral
-        float err = _setpoint - this->_getDeg(curPulse);
-        float derr = (err - this->_prev_err) / this->_time_interval;
-        this->_integral += err * this->_time_interval;
-
-        // Reset derr and integral due to setpoint changed
-        if (this->_new_setpoint)
-        {
-            derr = 0;
-            this->_integral = 0;
-            this->_new_setpoint = false;
-        }
-
-        this->_prev_err = err;
-        result = (int)(myfPID.Result(err, derr, this->_integral) * this->_pwm_res / this->_rated_V);
+        result = (int)(myfPID.Result(err, derr, this->_integral) * float(this->_pwm_res) / this->_rated_V);
         // Serial.println(this->_getDeg(curPulse));
     }
     else
