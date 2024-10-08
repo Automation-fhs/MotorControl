@@ -46,7 +46,7 @@ float FuzzyRules[7][7] = {
 
 // =======================================================================================
 
-float PIDdegree[3] = {24, 1, 1.5};
+float PIDdegree[3] = {10, 1, 4};
 float PIDfactor[3] = {PIDdegree[0] * M_PI / 180, PIDdegree[1] * M_PI / 180, PIDdegree[2] * M_PI / 180};
 
 // =======================================================================================
@@ -104,13 +104,13 @@ float PRules[7][7] = {
 #define IN6 -IP6
 
 float IRules[7][7] = {
-    {IP6, IP6, IP6, IN6, IN6, IN2, IP2},
-    {IP6, IP6, IP4, IN6, IN4, IZO, IP4},
-    {IP6, IP6, IP2, IN6, IN2, IP2, IP6},
-    {IP6, IP4, IZO, IN6, IZO, IP4, IP6},
-    {IP6, IP2, IN2, IN6, IP2, IP6, IP6},
-    {IP4, IZO, IN4, IN6, IP4, IP6, IP6},
-    {IP2, IN2, IN6, IN6, IP6, IP6, IP6}};
+    {IP6, IP6, IP6, IN5, IN5, IN2, IP2},
+    {IP6, IP6, IP4, IN5, IN4, IZO, IP4},
+    {IP6, IP6, IP2, IN5, IN2, IP2, IP6},
+    {IP6, IP4, IZO, IN5, IZO, IP4, IP6},
+    {IP6, IP2, IN2, IN5, IP2, IP6, IP6},
+    {IP4, IZO, IN4, IN5, IP4, IP6, IP6},
+    {IP2, IN2, IN5, IN5, IP6, IP6, IP6}};
 
 // --------- D Rules ---------
 #define DZO 0

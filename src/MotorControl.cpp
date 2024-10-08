@@ -63,7 +63,7 @@ int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1)
             this->_integral = 0;
             this->_new_setpoint = false;
         }
-        Serial.println(this->_getDeg(curPulse));
+        // Serial.println(this->_getDeg(curPulse));
         this->_prev_err = err;
         result = (int)(myPID.Result(err, derr, this->_integral) * float(this->_pwm_res) / this->_rated_V);
     }
@@ -90,7 +90,7 @@ int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1)
 
         this->_prev_err = err;
         result = -(int)(myFuzzy.Result(err, derr));
-        Serial.println(this->_getDeg(curPulse));
+        // Serial.println(this->_getDeg(curPulse));
     }
     else if (this->_Controller == 3)
     { // ------------------- FuzzyPID Controller -------------------
@@ -116,12 +116,12 @@ int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1)
 
         this->_prev_err = err;
         result = (int)(myfPID.Result(err, derr, this->_integral) * this->_pwm_res / this->_rated_V);
-        Serial.println(this->_getDeg(curPulse));
+        // Serial.println(this->_getDeg(curPulse));
     }
     else
     {
         result = 0;
-        Serial.println("Invalid controller");
+        //  Serial.println("Invalid controller");
     }
 
     if (result > this->_pwm_res)

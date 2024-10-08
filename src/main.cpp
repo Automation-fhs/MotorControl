@@ -26,9 +26,9 @@
 #define Enc_B 20
 #define Enc_Z 19
 
-#define Motor_PWM 5
-#define Motor_Dir 4
-#define Home_Sensor 18
+#define Motor_PWM 4
+#define Motor_Dir 3
+#define Home_Sensor 25
 #define PkgSensor 25
 #define Spare_Sensor 3
 #define HomeSpeed 30
@@ -36,7 +36,7 @@
 #define Open_Offset_Addr 1
 #define Motor_Voltage 12
 #define Enc_PPP 1000
-#define CallibHome 360
+#define CallibHome 340
 #define Control_Pin 23
 #define Home 0
 #define Open 30
@@ -57,6 +57,7 @@ float prev_setpoint;
 bool test = false;
 uint32_t sTimer;
 bool newsetpoint = false;
+bool homeErr = false;
 
 void homeMode()
 {
@@ -67,11 +68,11 @@ void homeMode()
     analogWrite(Motor_PWM, HomeSpeed);
     while (digitalRead(Home_Sensor))
     {
-      // Serial.println("Finding Home");
+      Serial.println("Finding Home");
       analogWrite(Motor_PWM, HomeSpeed);
     }
     myEncoder.setCurPulse(CallibHome);
-    // Serial.println("Home found!");
+    Serial.println("Home found!");
   }
   else
   {
@@ -79,6 +80,7 @@ void homeMode()
     analogWrite(Motor_PWM, HomeSpeed);
     while (!digitalRead(Home_Sensor))
     {
+      Serial.println("Finding Home");
       analogWrite(Motor_PWM, HomeSpeed);
     }
     analogWrite(Motor_PWM, 0);
@@ -88,6 +90,7 @@ void homeMode()
       analogWrite(Motor_PWM, HomeSpeed);
     }
     myEncoder.setCurPulse(CallibHome);
+    Serial.println("Home found!");
   }
   analogWrite(Motor_PWM, 0);
 }
@@ -95,13 +98,28 @@ void homeMode()
 void enc()
 {
   myEncoder.upd_Pulse(digitalRead(Enc_A), digitalRead(Enc_B));
+  bool cur_Home = digitalRead(Home_Sensor);
+  uint32_t motorPos = myEncoder.getCurPulse();
+  if (prev_Home == 1 && !cur_Home && motorPos >= CallibHome - 100 && motorPos <= CallibHome + 100)
+  {
+    myEncoder.setCurPulse(CallibHome);
+    Serial.println("Reset Home");
+  };
 }
 
 void motorControl()
 {
-  if (setpoint == Home && newsetpoint == false)
+  if(isHome) {
+    if (setpoint == Home && newsetpoint == false)
   {
     newsetpoint = true;
+  }
+
+  if(myEncoder.getCurPulse()/(2*Enc_PPP) >= Open + 3) {
+    contrl_signl -= HomeSpeed;
+  }
+  if(myEncoder.getCurPulse()/(2*Enc_PPP) <= Home - 3){
+    contrl_signl += HomeSpeed;
   }
 
   contrl_signl = myMotor.CtrlSignl(setpoint, myEncoder.getCurPulse(), 1);
@@ -116,9 +134,12 @@ void motorControl()
     analogWrite(Motor_Dir, 0);
     analogWrite(Motor_PWM, 0);
     armed = false;
-    delay(5);
-    homeMode();
-    armed = true;
+    while(!digitalRead(Home_Sensor)) {
+      analogWrite(Motor_Dir, 255);
+      analogWrite(Motor_PWM, HomeSpeed);
+    }
+    analogWrite(Motor_PWM, 0);
+    homeErr = true;
   }
   if (setpoint == Home && newsetpoint == true && abs(myEncoder.getCurPulse() / (2 * Enc_PPP) - Home) <= 1 && abs(contrl_signl) <= 0 && digitalRead(Home_Sensor))
   {
@@ -132,6 +153,8 @@ void motorControl()
     armed = true;
   }
 
+  }
+  
   if (armed)
   {
     if (contrl_signl >= 0)
@@ -192,25 +215,26 @@ void loop()
     {
       sTimer = millis();
       setpoint = Home;
+      homeErr = false;
+      armed = true;
     }
-    if (millis() - sTimer >= 100)
+    if ((millis() - sTimer >= 100) && !homeErr)
     {
       setpoint = Open;
       // Serial.println("Arm Open");
     }
   }
 
-  if (Serial.available())
-  {
+  if(Serial.available()) {
     int signal = Serial.read();
-    if (signal == 49)
-    {
-      setpoint = 30;
+    if(signal == 49) {
+      setpoint = Open;
+      test = true;
     }
-    else
-    {
-      setpoint = 0;
-    }
+    else {
+      setpoint = Home;
+      test = false;
+      }
   }
 }
 
