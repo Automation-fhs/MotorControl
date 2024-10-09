@@ -59,35 +59,47 @@ uint32_t sTimer;
 bool newsetpoint = false;
 bool homeErr = false;
 
+void drive(int signal)
+{
+  if (signal >= 0)
+  {
+    analogWrite(Motor_Dir, 255);
+    analogWrite(Motor_PWM, signal);
+  }
+  else
+  {
+    analogWrite(Motor_Dir, 0);
+    analogWrite(Motor_PWM, -signal);
+  }
+}
+
 void homeMode()
 {
   Serial.println("Finding Home");
   if (digitalRead(Home_Sensor))
   {
-    analogWrite(Motor_Dir, 0);
-    analogWrite(Motor_PWM, HomeSpeed);
+    drive(-HomeSpeed);
     while (digitalRead(Home_Sensor))
     {
       Serial.println("Finding Home");
-      analogWrite(Motor_PWM, HomeSpeed);
+      drive(-HomeSpeed);
     }
     myEncoder.setCurPulse(CallibHome);
     Serial.println("Home found!");
   }
   else
   {
-    analogWrite(Motor_Dir, 255);
-    analogWrite(Motor_PWM, HomeSpeed);
+    drive(HomeSpeed);
     while (!digitalRead(Home_Sensor))
     {
       Serial.println("Finding Home");
-      analogWrite(Motor_PWM, HomeSpeed);
+      drive(HomeSpeed);
     }
-    analogWrite(Motor_PWM, 0);
-    analogWrite(Motor_Dir, 0);
+    drive(0);
     while (digitalRead(Home_Sensor))
     {
-      analogWrite(Motor_PWM, HomeSpeed);
+      drive(-HomeSpeed);
+      ;
     }
     myEncoder.setCurPulse(CallibHome);
     Serial.println("Home found!");
@@ -134,23 +146,20 @@ void motorControl()
     {
       Serial.println("Fault Home Position");
       newsetpoint = false;
-      analogWrite(Motor_Dir, 0);
-      analogWrite(Motor_PWM, 0);
+      drive(0);
       armed = false;
       while (!digitalRead(Home_Sensor))
       {
-        analogWrite(Motor_Dir, 255);
-        analogWrite(Motor_PWM, HomeSpeed);
+        drive(HomeSpeed);
       }
-      analogWrite(Motor_PWM, 0);
+      drive(0);
       homeErr = true;
     }
     if (setpoint == Home && newsetpoint == true && abs(myEncoder.getCurPulse() / (2 * Enc_PPP) - Home) <= 1 && abs(contrl_signl) <= 0 && digitalRead(Home_Sensor))
     {
       Serial.println("Fault Home Position");
       newsetpoint = false;
-      analogWrite(Motor_Dir, 0);
-      analogWrite(Motor_PWM, 0);
+      drive(0);
       armed = false;
       delay(5);
       homeMode();
@@ -160,16 +169,7 @@ void motorControl()
 
   if (armed)
   {
-    if (contrl_signl >= 0)
-    {
-      analogWrite(Motor_Dir, 255);
-      analogWrite(Motor_PWM, contrl_signl);
-    }
-    else
-    {
-      analogWrite(Motor_Dir, 0);
-      analogWrite(Motor_PWM, -contrl_signl);
-    }
+    drive(contrl_signl);
   }
 }
 
