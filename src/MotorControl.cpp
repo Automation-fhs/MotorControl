@@ -58,7 +58,7 @@ int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1)
     {
         derr = 0;
         this->_integral = 0;
-        this->_ovsh = true;
+        this->_ovsh = true; 
         this->_new_setpoint = false;
     }
     // Serial.println(this->_getDeg(curPulse));

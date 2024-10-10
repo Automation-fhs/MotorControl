@@ -47,7 +47,8 @@ float FuzzyRules[7][7] = {
 // =======================================================================================
 
 float PIDdegree[3] = {10, 1, 4};
-float PIDfactor[3] = {PIDdegree[0] * M_PI / 180, PIDdegree[1] * M_PI / 180, PIDdegree[2] * M_PI / 180};
+float PID_Scale_Factor = 1;
+float PIDfactor[3] = {PID_Scale_Factor*PIDdegree[0] * M_PI / 180, PID_Scale_Factor*PIDdegree[1] * M_PI / 180, PID_Scale_Factor*PIDdegree[2] * M_PI / 180};
 
 // =======================================================================================
 

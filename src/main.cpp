@@ -36,7 +36,7 @@
 #define Open_Offset_Addr 1
 #define Motor_Voltage 12
 #define Enc_PPP 1000
-#define CallibHome 340
+#define CallibHome 330
 #define Control_Pin 23
 #define Home 0
 #define Open 30
@@ -117,6 +117,7 @@ void enc()
     myEncoder.setCurPulse(CallibHome);
     Serial.println("Reset Home");
   };
+  prev_Home = cur_Home;
 }
 
 void motorControl()
@@ -138,6 +139,8 @@ void motorControl()
     }
 
     contrl_signl = myMotor.CtrlSignl(setpoint, myEncoder.getCurPulse(), 1);
+
+    if(homeErr) contrl_signl = 0;
     // Serial.print(myEncoder.getCurPulse());
     // Serial.print(" ");
     // Serial.println(contrl_signl);
@@ -199,6 +202,8 @@ void setup()
 
 void loop()
 {
+
+  // drive(-HomeSpeed);
 
   if (!isHome)
   {
