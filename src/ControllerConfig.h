@@ -46,7 +46,7 @@ float FuzzyRules[7][7] = {
 
 // =======================================================================================
 
-float PIDdegree[3] = {10, 1, 4};
+float PIDdegree[3] = {10, 1, 4.2};
 float PID_Scale_Factor = 1;
 float PIDfactor[3] = {PID_Scale_Factor*PIDdegree[0] * M_PI / 180, PID_Scale_Factor*PIDdegree[1] * M_PI / 180, PID_Scale_Factor*PIDdegree[2] * M_PI / 180};
 
@@ -139,9 +139,9 @@ float IRules[7][7] = {
 
 float DRules[7][7] = {
     {DN6, DN6, DP2, DZO, DP6, DP6, DN6},
-    {DN6, DN6, DP4, DZO, DP6, DP4, DN6},
-    {DN6, DN3, DP6, DZO, DP6, DP2, DN6},
-    {DN6, DZO, DP6, DZO, DP6, DZO, DN6},
-    {DN6, DP2, DP6, DZO, DP6, DN3, DN6},
-    {DN6, DP4, DP6, DZO, DP4, DN6, DN6},
+    {DN6, DN3, DP4, DZO, DP6, DP6, DN6},
+    {DN6, DZO, DP6, DZO, DP6, DP4, DN6},
+    {DN6, DP2, DP6, DZO, DP6, DP2, DN6},
+    {DN6, DP4, DP6, DZO, DP6, DZO, DN6},
+    {DN6, DP6, DP6, DZO, DP4, DN3, DN6},
     {DN6, DP6, DP6, DZO, DP2, DN6, DN6}};
