@@ -5,7 +5,7 @@ class MotorControl
 public:
     MotorControl(int rated_V, int enc_pulse_per_phase, int gear_ratio, float time_interval, int Controller = 1, int pwm_res = 255);
     void setpwm_res(int pwm_res);
-    int CtrlSignl(float setpoint, long curPulse, int unit = 1);
+    int CtrlSignl(float setpoint, long curPulse, int unit = 1); // Unit: 1 for Degree; 2 for Radian
 
 private:
     float _getDeg(long curPulse);

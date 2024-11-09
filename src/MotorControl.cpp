@@ -31,7 +31,7 @@ float MotorControl::_getRad(long pulse)
     return float(pulse) / (2 * this->_encPPP * this->_gear_ratio) * M_PI;
 }
 
-int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1)
+int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1) // Unit: 1 for Degree; 2 for Radian
 {
     float _setpoint;
     int result;
@@ -58,7 +58,7 @@ int MotorControl::CtrlSignl(float setpoint, long curPulse, int unit = 1)
     {
         derr = 0;
         this->_integral = 0;
-        this->_ovsh = true; 
+        this->_ovsh = true;
         this->_new_setpoint = false;
     }
     // Serial.println(this->_getDeg(curPulse));
